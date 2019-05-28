@@ -5,6 +5,7 @@
  */ 
 
  #include "avr/io.h"
+ #include <avr/interrupt.h>
  #include "define.h"
 
 
@@ -20,7 +21,7 @@
 	 #endif
 
 	 UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); /* 8-bit data */
-	 UCSR0B = (1 << RXEN0) | (1 << TXEN0);   /* Enable RX and TX */
+	 UCSR0B = (1 << RXEN0) | (1 << TXEN0) | (1 << RXCIE0);   /* Enable RX and TX and Receive interrupt */
  }
 
  void transmit(uint8_t data)

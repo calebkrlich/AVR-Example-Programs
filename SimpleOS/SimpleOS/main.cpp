@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include <util/setbaud.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
 
 uint8_t option = 0;
@@ -20,7 +21,18 @@ uint8_t inOption = 0;
 uint8_t programRunning = 0;
 uint8_t inProgram = 0;
 
+uint8_t ping = 0;
 
+
+char received;
+char lastReceived;
+
+
+ISR()
+{
+	received = UDR0;
+	ping = 1;
+}
 
 void displayOptions(void)
 {
@@ -35,8 +47,6 @@ int main(void)
 	initUART();
 	initBlink();
 
-	char received;
-	char lastReceived;
 	
 	/*
 	transmitString("Welcome to my Simple OS \n");
@@ -46,8 +56,12 @@ int main(void)
 
 	while (1) 
     {
+		
 		while(inProgram == 1)	//if we are running a program
 		{
+			if(ping == 1)
+				transmit(received);
+
 			transmitString("Executing Program...");
 
 			if(programRunning == 1)
